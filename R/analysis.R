@@ -65,10 +65,10 @@ for (file_info in files) {
   df <- rbind(df, df_temp)
 }
 
-df1$VEMF <- factor(df1$VEMF, levels = paste0("CM", 1:24))
+df$VEMF <- factor(df$VEMF, levels = paste0("CM", 1:24))
 
 
-g1 <- df1 %>% 
+g1 <- df %>% 
   filter(as.numeric(as.character(Year)) %% 5 == 0) %>%
   ggplot(aes(x = Year, y = CP, group = VEMF, color = VEMF)) +
   geom_line(linewidth = 1) +
