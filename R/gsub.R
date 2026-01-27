@@ -1,27 +1,33 @@
-
 # Prm ---------------------------------------------------------------------
-
-
 
 df$VEMF <- gsub("Prm_Ene_Hyd", "Hydro", df$VEMF)
 df$VEMF <- gsub("Prm_Ene_Solar", "Solar", df$VEMF)
 df$VEMF <- gsub("Prm_Ene_Win", "Wind", df$VEMF)
 df$VEMF <- gsub("Prm_Ene_Nuc", "Nuclear", df$VEMF)
-df$VEMF <- gsub("Prm_Ene_Coa_w_CCS|Prm_Ene_Coa_wo_CCS|Prm_Ene_Oil_w_CCS|Prm_Ene_Oil_wo_CCS|Prm_Ene_Gas_w_CCS|Prm_Ene_Gas_wo_CCS", 
-                 "Fossil Fuels", df$VEMF)
-df$VEMF <- gsub("Prm_Ene_Bio_w_CCS|Prm_Ene_Bio_wo_CCS", 
-                 "Biomass", df$VEMF)
-
-
+df$VEMF <- gsub("Prm_Ene_Bio_w_CCS", "Biomass|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Bio_wo_CCS", "Biomass|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Gas_w_CCS", "Gas|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Gas_wo_CCS", "Gas|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Oil_w_CCS", "Oil|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Oil_wo_CCS", "Oil|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Coa_w_CCS", "Coal|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Prm_Ene_Coa_wo_CCS", "Coal|w/o CCS", df$VEMF)
 # Sec ---------------------------------------------------------------------
 
 df$VEMF <- gsub("Sec_Ene_Ele_Hyd", "Hydro", df$VEMF)
 df$VEMF <- gsub("Sec_Ene_Ele_Solar", "Solar", df$VEMF)
 df$VEMF <- gsub("Sec_Ene_Ele_Win", "Wind", df$VEMF)
 df$VEMF <- gsub("Sec_Ene_Ele_Nuc", "Nuclear", df$VEMF)
-df$VEMF <- gsub("Sec_Ene_Ele_Gas_w_CCS|Sec_Ene_Ele_Gas_wo_CCS|Sec_Ene_Ele_Oil_w_CCS|Sec_Ene_Ele_Oil_wo_CCS|Sec_Ene_Ele_Coa_w_CCS|Sec_Ene_Ele_Coa_wo_CCS", "Fossil Fuels", df$VEMF)
-df$VEMF <- gsub("Sec_Ene_Ele_Bio_w_CCS|Sec_Ene_Ele_Bio_wo_CCS", "Biomass", df$VEMF)
-
+#df$VEMF <- gsub("Sec_Ene_Ele_Gas_w_CCS|Sec_Ene_Ele_Gas_wo_CCS|Sec_Ene_Ele_Oil_w_CCS|Sec_Ene_Ele_Oil_wo_CCS|Sec_Ene_Ele_Coa_w_CCS|Sec_Ene_Ele_Coa_wo_CCS", "Fossil Fuels", df$VEMF)
+#df$VEMF <- gsub("Sec_Ene_Ele_Bio_w_CCS|Sec_Ene_Ele_Bio_wo_CCS", "Biomass", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Bio_w_CCS", "Biomass|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Bio_wo_CCS", "Biomass|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Gas_w_CCS", "Gas|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Gas_wo_CCS", "Gas|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Oil_w_CCS", "Oil|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Oil_wo_CCS", "Oil|w/o CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Coa_w_CCS", "Coal|w/ CCS", df$VEMF)
+df$VEMF <- gsub("Sec_Ene_Coa_wo_CCS", "Coal|w/o CCS", df$VEMF)
 
 
 # Fin ---------------------------------------------------------------------
@@ -36,9 +42,10 @@ df$VEMF <- gsub("Fin_Ene_Liq_Bio", "Biofuel", df$VEMF)
 df$VEMF <- gsub("Fin_Ene_SolidsCoa", "Coal", df$VEMF)
 df$VEMF <- gsub("Fin_Ene_SolidsBio", "Biomass", df$VEMF)
 
-
+df$VEMF <- gsub("Fin_Ene_Ind", "Industry", df$VEMF)
+df$VEMF <- gsub("Fin_Ene_Res_and_Com", "Buildings", df$VEMF)
+df$VEMF <- gsub("Fin_Ene_Tra", "Transport", df$VEMF)
 # Rem ---------------------------------------------------------------------
-
 
 df$VEMF <- gsub("Car_Rem_Bio_wit_CCS", "BECCS", df$VEMF)
 df$VEMF <- gsub("Car_Rem_Bio", "Biochar", df$VEMF)
@@ -47,11 +54,7 @@ df$VEMF <- gsub("Car_Rem_Enh_Wea", "Enhanced Weather", df$VEMF)
 df$VEMF <- gsub("Car_Rem_Frs", "Afforestation", df$VEMF)
 df$VEMF <- gsub("Car_Rem_Soi_Car_Seq", "Soil Carbon", df$VEMF)
 
-
-
 # Emi ---------------------------------------------------------------------
-
-
 
 df$VEMF <- gsub("Emi_CO2_AFO", "AFOLU", df$VEMF)
 df$VEMF <- gsub("Emi_CO2_Ene_Sup", "Energy Supply", df$VEMF)

@@ -1,24 +1,3 @@
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(gdxrrw)
-library(stringr)
-library(gridExtra)
-library(patchwork)
-library(cowplot)
-library(lemon)
-library(purrr)
-library(rnaturalearthdata)
-library(rnaturalearth)
-
-theme_1 <- theme_bw() +
-  theme(text = element_text(size = 16),
-        axis.text.x = element_text(angle = 45, size = 16, hjust = 1, vjust = 1),
-        axis.title.x = element_blank(),
-        legend.position = "right", 
-        #legend.title = element_blank(),
-        strip.background = element_blank())
-setwd("data")
 
 # Pop ----------------------------------------------------------------
 
@@ -430,14 +409,30 @@ load_and_format_data <- function(gdx_file, scenario_name,  year) {
 }
 
 scenarios <- list(
-  list(gdx_file = "SSP2i_CM19_NoCC_No.gdx", scenario_name = "CM1"),
-  list(gdx_file = "SSP2i_CM20_NoCC_No.gdx", scenario_name = "CM2"),
-  list(gdx_file = "SSP2i_CM21_NoCC_No.gdx", scenario_name = "CM3"),
-  list(gdx_file = "SSP2i_CM22_NoCC_No.gdx", scenario_name = "CM4"),
-  list(gdx_file = "SSP2i_CM23_NoCC_No.gdx", scenario_name = "CM5"),
-  list(gdx_file = "SSP2i_CM24_NoCC_No.gdx", scenario_name = "CM6")
-  
-  
+  list(gdx_file = "SSP2i_CM1_NoCC_No.gdx", scenario_name = "CM7"),
+  list(gdx_file = "SSP2i_CM2_NoCC_No.gdx", scenario_name = "CM8"),
+  list(gdx_file = "SSP2i_CM3_NoCC_No.gdx", scenario_name = "CM9"),
+  list(gdx_file = "SSP2i_CM4_NoCC_No.gdx", scenario_name = "CM10"),
+  list(gdx_file = "SSP2i_CM5_NoCC_No.gdx", scenario_name = "CM11"),
+  list(gdx_file = "SSP2i_CM6_NoCC_No.gdx", scenario_name = "CM12"),
+  list(gdx_file = "SSP2i_CM7_NoCC_No.gdx", scenario_name = "CM1"),
+  list(gdx_file = "SSP2i_CM8_NoCC_No.gdx", scenario_name = "CM2"),
+  list(gdx_file = "SSP2i_CM9_NoCC_No.gdx", scenario_name = "CM3"),
+  list(gdx_file = "SSP2i_CM10_NoCC_No.gdx", scenario_name = "CM4"),
+  list(gdx_file = "SSP2i_CM11_NoCC_No.gdx", scenario_name = "CM5"),
+  list(gdx_file = "SSP2i_CM12_NoCC_No.gdx", scenario_name = "CM6"),
+  list(gdx_file = "SSP2i_CM13_NoCC_No.gdx", scenario_name = "CM13"),
+  list(gdx_file = "SSP2i_CM14_NoCC_No.gdx", scenario_name = "CM14"),
+  list(gdx_file = "SSP2i_CM15_NoCC_No.gdx", scenario_name = "CM15"),
+  list(gdx_file = "SSP2i_CM16_NoCC_No.gdx", scenario_name = "CM16"),
+  list(gdx_file = "SSP2i_CM17_NoCC_No.gdx", scenario_name = "CM17"),
+  list(gdx_file = "SSP2i_CM18_NoCC_No.gdx", scenario_name = "CM18"),
+  list(gdx_file = "SSP2i_CM19_NoCC_No.gdx", scenario_name = "CM19"),
+  list(gdx_file = "SSP2i_CM20_NoCC_No.gdx", scenario_name = "CM20"),
+  list(gdx_file = "SSP2i_CM21_NoCC_No.gdx", scenario_name = "CM21"),
+  list(gdx_file = "SSP2i_CM22_NoCC_No.gdx", scenario_name = "CM22"),
+  list(gdx_file = "SSP2i_CM23_NoCC_No.gdx", scenario_name = "CM23"),
+  list(gdx_file = "SSP2i_CM24_NoCC_No.gdx", scenario_name = "CM24")
 )
 
 
@@ -446,7 +441,8 @@ all_data <- purrr::map_dfr(scenarios, function(scenario) {
   load_and_format_data(scenario$gdx_file, scenario$scenario_name,  year)
 })
 
-all_data$scenario <- factor(all_data$scenario, levels = c("CM1", "CM2", "CM3", "CM4", "CM5", "CM6"))
+#all_data$scenario <- factor(all_data$scenario, levels = c("CM1", "CM2", "CM3", "CM4", "CM5", "CM6"))
+all_data$scenario <- factor(all_data$scenario, levels = paste0("CM", 1:24))
 
 color <- c(
   "BECCS" = "#4DAF4A",          

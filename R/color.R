@@ -1,25 +1,12 @@
+#col = c("Biomass" = "darkolivegreen2", "Fossil Fuels" = "gray60",  "Hydro" = "lightsteelblue", 
+#        "Nuclear" = "moccasin",  "Solar" = "lightsalmon", "Wind" = "lightskyblue3")
 
+col <- c("Coal|w/o CCS" = "grey50", "Coal|w/ CCS" = "grey30", "Oil|w/o CCS" = "tan3",
+               "Oil|w/ CCS" = "sandybrown", "Gas|w/o CCS" = "lightgoldenrod", "Gas|w/ CCS" = "lightgoldenrod3",
+               "Hydro" = "lightsteelblue", "Nuclear" = "moccasin", "Solar" = "lightsalmon", "Wind" = "lightskyblue3",
+               "Biomass|w/o CCS" = "darkolivegreen2", "Biomass|w/ CCS" = "darkolivegreen4", "Geothermal" = "peru")
 
-
-Prm_col = c(
-  "Biomass" = "darkolivegreen2", 
-  "Fossil Fuels" = "gray60",  
-  "Hydro" = "lightsteelblue", 
-  "Nuclear" = "moccasin",  "Solar" = "lightsalmon", "Wind" = "lightskyblue3"
-)
-
-
-Sec_col = c(
-  "Biomass" = "darkolivegreen2", 
-  "Fossil Fuels" = "grey50", 
-  "Geothermal" = "peru",
-  "Hydro" = "lightsteelblue", 
-  "Nuclear" = "moccasin", 
-  "Solar" = "lightsalmon", 
-  "Wind" = "lightskyblue3"
-)
-
-Fin_col <- c( 
+col <- c( 
   "Coal"="grey70",
   "Oil"="sandybrown",
   "Gas"="moccasin",
@@ -30,9 +17,7 @@ Fin_col <- c(
   "Hydrogen"="thistle2"
 )
 
-
-
-Rem_col <- c(
+col <- c(
   "BECCS" = "#4DAF4A",          
   "Biochar" = "#E69F00",       
   "Soil Carbon" = "#A65628",    
@@ -41,7 +26,7 @@ Rem_col <- c(
   "DACCS" = "#984EA3"           
 )
 
-Emi_col <- c("AFOLU" = "#FC8D62",
+col <- c("AFOLU" = "#FC8D62",
            "Energy Supply" = "#66C2A5",
            "Energy Demand" = "#8DA0CB",
            "Industrial Processes" = "#984EA3",
