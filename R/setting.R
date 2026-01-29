@@ -20,7 +20,7 @@ theme_1 <- theme_bw() +
         strip.background = element_blank())
 setwd("data")
 
-output_dir <- file.path("..", "output")
+output_dir <- file.path("..", "output/biomin")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir)
 }

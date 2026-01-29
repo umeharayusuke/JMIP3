@@ -2,7 +2,7 @@
 
 df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(VEMF %in% vec) %>%
-  filter(YEMF == "2100") %>% 
+  #filter(YEMF == "2100") %>% 
   filter(SCENARIO %in% CLP)
 df$SCENARIO <- factor(df$SCENARIO, levels = CLP)
 
@@ -100,8 +100,15 @@ g <- ggplot(data = df) +
   theme_1
 plot(g)
 
+g <- ggplot(data = df) +
+  geom_bar(mapping = aes(x = YEMF, y = IAMC_Template, fill = VEMF), 
+           stat = "identity", width = 0.8) +
+  scale_fill_manual(values = col)+
+  ylab(ylabel)+
+  theme_1
+plot(g)
 
-name  <- "rem.png"
+#name  <- "rem.png"
 ggsave(
   filename = file.path(output_dir, name),
   plot = g,
@@ -165,8 +172,16 @@ g <- df %>%
   theme_1
 plot(g)
 
+g <- df %>% 
+  ggplot(aes(x = YEMF, y = IAMC_Template, group = 1)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +  
+  scale_x_discrete(breaks = c("2020","2040","2060","2080","2100"))+
+  ylab(paste0(thema,  " (US$)"))+
+  theme_1
+plot(g)
 
-name  <- paste0(thema, "19-24.png")
+name  <- paste0(thema, ".png")
 ggsave(
   filename = file.path(output_dir, name),
   plot = g,
