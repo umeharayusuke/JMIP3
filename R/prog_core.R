@@ -3,6 +3,7 @@
 df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(VEMF %in% vec) %>%
   #filter(YEMF == "2100") %>% 
+  filter(YEMF %in% c("2050","2100")) %>% 
   filter(SCENARIO %in% CLP)
 df$SCENARIO <- factor(df$SCENARIO, levels = CLP)
 
