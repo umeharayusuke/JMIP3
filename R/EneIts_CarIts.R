@@ -1,6 +1,8 @@
 output_dir <- file.path("..", "output/laboseminar")
 
 CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
+CLP <- c("SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
+
 vec <- c("Ele_rat_Ele", 
          "Sha_NonBioRen_Ene_Prm_Ene",
          "Ene_Its", 
@@ -13,16 +15,16 @@ df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(SCENARIO %in% CLP)
 
 df$SCENARIO <- gsub("SSP2i_BaU_NoCC_No", "BaU", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM7_NoCC_No", "High", df$SCENARIO)
+df$SCENARIO <- gsub("SSP2i_CM13_NoCC_No", "High", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM15_NoCC_No", "Middle", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM24_NoCC_No", "Low", df$SCENARIO)
-df$SCENARIO <- factor(df$SCENARIO, levels = c("BaU","High", "Middle", "Low"))
+df$SCENARIO <- gsub("SSP2i_CM18_NoCC_No", "Low", df$SCENARIO)
+df$SCENARIO <- factor(df$SCENARIO, levels = c("High", "Middle", "Low"))
 
-df$VEMF <- recode(df$VEMF,
-                  "Ele_rat_Ele" = "Electrification rate (%)",
-                  "Sha_NonBioRen_Ene_Prm_Ene" = "Renewable share (%)",
-                  "Ene_Its" = "Energy intensity (PE GJ/GDP US2010$)",
-                  "Car_Its" = "Carbon intensity (CO2 Mt/PE EJ)")
+df$VEMF <- dplyr::recode(df$VEMF,
+                         "Ele_rat_Ele" = "Electrification rate (%)",
+                         "Sha_NonBioRen_Ene_Prm_Ene" = "Renewable share (%)",
+                         "Ene_Its" = "Energy intensity (PE GJ/GDP US2010$)",
+                         "Car_Its" = "Carbon intensity (CO2 Mt/PE EJ)")
 
 g <- df %>% 
   ggplot(aes(x = YEMF,

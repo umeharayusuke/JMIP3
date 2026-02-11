@@ -12,6 +12,7 @@ thema <- "Ele_rat_Ele"
 
 
 CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
+CLP <- c("SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
 
 df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(VEMF == thema) %>%

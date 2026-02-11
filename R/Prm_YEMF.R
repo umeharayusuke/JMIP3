@@ -1,7 +1,7 @@
-output_dir <- file.path("..", "output/laboseminar")
+CLP <- c("SSP2i_CM18_NoCC_No")
+CLP <- c("SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
 
 
-CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
 vec <- c("Prm_Ene_Coa_w_CCS", 
          "Prm_Ene_Coa_wo_CCS",
          "Prm_Ene_Gas_w_CCS", 
@@ -25,7 +25,7 @@ yvec<-c("2020","2050","2100")
 df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(VEMF %in% vec) %>%
   #filter(YEMF == "2100") %>% 
-  filter(YEMF %in% yvec) %>% 
+  #filter(YEMF %in% yvec) %>% 
   filter(SCENARIO %in% CLP)
 #df$SCENARIO <- factor(df$SCENARIO, levels = CLP)
 
@@ -45,47 +45,16 @@ df$SCENARIO <- gsub("SSP2i_BaU_NoCC_No", "BaU", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM13_NoCC_No", "NZ+Positive", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM15_NoCC_No", "NZ", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM18_NoCC_No", "NZ+Negative", df$SCENARIO)
-df$SCENARIO <- factor(df$SCENARIO, levels = c("BaU","NZ+Positive", "NZ", "NZ+Negative"))
+df$SCENARIO <- factor(df$SCENARIO, levels = c("NZ+Positive", "NZ", "NZ+Negative"))
 
 
 g <- ggplot(data = df) +
-  geom_bar(mapping = aes(x = SCENARIO, y = IAMC_Template, fill = VEMF), 
-           stat = "identity", width = 0.7) +
+  geom_bar(mapping = aes(x = YEMF, y = IAMC_Template, fill = VEMF), 
+           stat = "identity", width = 0.9) +
   scale_fill_manual(values = col)+
   ylab(ylabel)+
-  facet_wrap(~ YEMF)+
+  facet_wrap(~ SCENARIO)+
   theme_1+
   theme(legend.title = element_blank())
 
 plot(g)
-
-
-df_rate <- df %>%
-  select(SCENARIO, VEMF, YEMF, IAMC_Template) %>%
-  pivot_wider(names_from = YEMF, values_from = IAMC_Template) %>%
-  mutate(diff = `2100` - `2050`)
-g_rate <- ggplot(df_rate) +
-  geom_col(aes(x = SCENARIO, y = diff, fill = VEMF),
-           position = "stack", width = 0.7) +
-  scale_fill_manual(values = col) +
-  ylab("Difference from 2050 to 2100 (EJ)") +
-  theme_1 +
-  theme(legend.title = element_blank())
-
-
-g2 <-(g + g_rate) +
-  plot_layout(widths = c(2, 1))+
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom",
-        legend.box = "horizontal")
-
-name="Prm_diff.png"
-ggsave(
-  filename = file.path(output_dir, name),
-  plot = g2,
-  width = 12,
-  height = 6.5,
-  units = "in",
-  dpi = 300,
-  bg = "white"
-)
