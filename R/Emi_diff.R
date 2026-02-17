@@ -1,7 +1,7 @@
 output_dir <- file.path("..", "output/laboseminar")
 
 
-CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
+CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
 
 vec<- c("Emi_CO2_AFO",
         "Emi_CO2_Ene_Sup",
@@ -35,9 +35,9 @@ df$VEMF <- gsub("Emi_CO2_Ind_Pro", "Industrial Processes", df$VEMF)
 df$VEMF <- gsub("Emi_CO2_Pro_Use", "Product Use", df$VEMF)
 df$VEMF <- gsub("Emi_CO2_Cap_and_Rem", "CDR(NonAff and NonBECCS)", df$VEMF)
 df$SCENARIO <- gsub("SSP2i_BaU_NoCC_No", "BaU", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM7_NoCC_No", "High", df$SCENARIO)
+df$SCENARIO <- gsub("SSP2i_CM13_NoCC_No", "High", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM15_NoCC_No", "Middle", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM24_NoCC_No", "Low", df$SCENARIO)
+df$SCENARIO <- gsub("SSP2i_CM18_NoCC_No", "Low", df$SCENARIO)
 df$SCENARIO <- factor(df$SCENARIO, levels = c("BaU","High", "Middle", "Low"))
 
 

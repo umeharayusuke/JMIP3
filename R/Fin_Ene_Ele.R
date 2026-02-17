@@ -1,6 +1,6 @@
 output_dir <- file.path("..", "output/laboseminar")
 
-CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
+CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
 
 vec <- c("Fin_Ene_Ind_Ele", 
          "Fin_Ene_Res_and_Com_Ele",
@@ -22,9 +22,9 @@ df$VEMF <- gsub("Fin_Ene_Car_Man_Dir_Air_Cap_Ele", "DACCS", df$VEMF)
 
 
 df$SCENARIO <- gsub("SSP2i_BaU_NoCC_No", "BaU", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM7_NoCC_No", "High", df$SCENARIO)
+df$SCENARIO <- gsub("SSP2i_CM13_NoCC_No", "High", df$SCENARIO)
 df$SCENARIO <- gsub("SSP2i_CM15_NoCC_No", "Middle", df$SCENARIO)
-df$SCENARIO <- gsub("SSP2i_CM24_NoCC_No", "Low", df$SCENARIO)
+df$SCENARIO <- gsub("SSP2i_CM18_NoCC_No", "Low", df$SCENARIO)
 df$SCENARIO <- factor(df$SCENARIO, levels = c("BaU","High", "Middle", "Low"))
 
 

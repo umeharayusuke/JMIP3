@@ -73,7 +73,7 @@ CLP <- c("SSP2i_CM7_NoCC_No","SSP2i_CM8_NoCC_No", "SSP2i_CM9_NoCC_No","SSP2i_CM1
 CLP <- c("SSP2i_CM13_NoCC_No","SSP2i_CM14_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM16_NoCC_No","SSP2i_CM17_NoCC_No","SSP2i_CM18_NoCC_No")
 CLP <- c("SSP2i_CM19_NoCC_No","SSP2i_CM20_NoCC_No", "SSP2i_CM21_NoCC_No","SSP2i_CM22_NoCC_No","SSP2i_CM23_NoCC_No","SSP2i_CM24_NoCC_No")
 CLP <- c("SSP2i_CM24_NoCC_No")
-CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
+CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM13_NoCC_No", "SSP2i_CM14_NoCC_No","SSP2i_CM18_NoCC_No")
 # Prm_Ene -----------------------------------------------------------------
 
 
