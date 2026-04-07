@@ -19,12 +19,12 @@ theme_1 <- theme_bw() +
         legend.position = "right", 
         #legend.title = element_blank(),
         strip.background = element_blank())
-setwd("data2")
+setwd("data3")
 
 df0 <- read_csv("JPN_IAMC.csv")
 
 df<- df0 %>% 
-  #filter(!SCENARIO %in% c("SSP2_BaU_NoCC_No", "SSP2_CM_NoCC_No", "SSP2i_CM_NoCC_No")) %>% 
+  filter(!SCENARIO %in% c("SSP2_BaU_NoCC_No", "SSP2_CM_NoCC_No", "SSP2i_CM_NoCC_No")) %>% 
   select(-`2055`,-`2065`, -`2075`, -`2085`, -`2095`)%>%
   mutate(SCENARIO = recode(
     SCENARIO,
@@ -57,7 +57,7 @@ df<- df0 %>%
   mutate(MODEL = "AIM/Hub-Japan 2.4") %>% 
   mutate(REGION = "Japan")
 
-write.csv(df, "JPN_IAMC_fix.csv", row.names = FALSE)
+write.csv(df, "JPN_IAMC_ver3.csv", row.names = FALSE)
 
 
 df_ref <- read_excel(
