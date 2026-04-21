@@ -30,7 +30,7 @@ theme_1 <- theme_bw() +
         legend.position = "right")
 setwd("data")
 
-output_dir <- file.path("..", "output/biomin")
+output_dir <- file.path("..", "output/CCS")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir)
 }
@@ -74,6 +74,7 @@ CLP <- c("SSP2i_CM13_NoCC_No","SSP2i_CM14_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_
 CLP <- c("SSP2i_CM19_NoCC_No","SSP2i_CM20_NoCC_No", "SSP2i_CM21_NoCC_No","SSP2i_CM22_NoCC_No","SSP2i_CM23_NoCC_No","SSP2i_CM24_NoCC_No")
 CLP <- c("SSP2i_CM24_NoCC_No")
 CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM13_NoCC_No", "SSP2i_CM14_NoCC_No","SSP2i_CM18_NoCC_No")
+CLP <- c("SSP2i_CM6_NoCC_No", "SSP2i_CM6_CCS_NoCC_No")
 # Prm_Ene -----------------------------------------------------------------
 
 
