@@ -21,7 +21,7 @@ theme_1 <- theme_bw() +
         strip.background = element_blank())
 
 setwd("data")
-setwd("0513")
+setwd("0520")
 
 
 files <- list(

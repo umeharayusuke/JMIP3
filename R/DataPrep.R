@@ -57,7 +57,7 @@ df<- df0 %>%
   mutate(MODEL = "AIM/Hub-Japan 2.4") %>% 
   mutate(REGION = "Japan")
 
-write.csv(df, "JPN_IAMC_ver3.csv", row.names = FALSE)
+write.csv(df, "JPN_IAMC.csv", row.names = FALSE)
 
 
 df_ref <- read_excel(
