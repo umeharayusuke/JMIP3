@@ -87,8 +87,44 @@ df <- df0 %>%
       UNIT
     )
   )
+# AIMHub result is import of emission, but submission required variable is net export of emission
+df <- df %>%
+  mutate(
+    across(
+      c(`2010`, `2015`, `2020`, `2025`, `2030`, `2035`, `2040`, 
+        `2045`, `2050`, `2060`, `2070`, `2080`, `2090`, `2100`),
+      ~ if_else(VARIABLE == "Trade|Emission Allowance",
+                as.numeric(.x) * -1,
+                as.numeric(.x))
+    )
+  )
 
 write.xlsx(df, "JPN_IAMC.xlsx", rowNames = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 df_ref <- read_excel(
   "Updated JMIP data template 20251219.xlsx",
