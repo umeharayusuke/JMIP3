@@ -14,13 +14,7 @@ library(readxl)
 library(writexl)
 library(openxlsx)
 
-theme_1 <- theme_bw() +
-  theme(text = element_text(size = 16),
-        axis.text.x = element_text(angle = 45, size = 16, hjust = 1, vjust = 1),
-        axis.title.x = element_blank(),
-        legend.position = "right", 
-        #legend.title = element_blank(),
-        strip.background = element_blank())
+
 setwd("data")
 setwd("0520")
 
@@ -103,29 +97,6 @@ write.xlsx(df, "JPN_IAMC.xlsx", rowNames = FALSE)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 df_ref <- read_excel(
   "Updated JMIP data template 20251219.xlsx",
   sheet = "new_definitions 20251219"
@@ -137,6 +108,6 @@ vars_ref <- df_ref$Variable
 # df_ref にはあるが df に無い VARIABLE
 #すなわち今回の要求変数の提出漏れ変数リスト
 df_nonmatch<-setdiff(vars_ref, unique(df$VARIABLE))
-write.csv(df_nonmatch, "required_variable_but_not_in_AIMHub.csv", row.names = FALSE)
+write.csv(df_nonmatch, "Not_Submission.csv", row.names = FALSE)
 
 
