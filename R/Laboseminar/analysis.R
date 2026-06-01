@@ -1,4 +1,18 @@
-
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(gdxrrw)
+library(stringr)
+library(gridExtra)
+library(patchwork)
+library(cowplot)
+library(lemon)
+library(purrr)
+library(rnaturalearthdata)
+library(rnaturalearth)
+library(viridis)
+library(scico)
+library(colorspace)
 # Pop ----------------------------------------------------------------
 
 

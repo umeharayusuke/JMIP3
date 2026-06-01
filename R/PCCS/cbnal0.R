@@ -10,14 +10,15 @@ library(lemon)
 library(purrr)
 library(rnaturalearthdata)
 library(rnaturalearth)
-
+library(viridis)
+library(scico)
 
 theme_1 <- theme_bw() +
   theme(text = element_text(size = 16),
         axis.text.x = element_text(angle = 45, size = 16, hjust = 1, vjust = 1),
         axis.title.x = element_blank(),
         legend.position = "right", 
-        #legend.title = element_blank(),
+        legend.title = element_blank(),
         strip.background = element_blank())
 
 setwd("data")

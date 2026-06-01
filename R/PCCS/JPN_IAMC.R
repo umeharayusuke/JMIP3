@@ -1,8 +1,29 @@
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(gdxrrw)
+library(stringr)
+library(gridExtra)
+library(patchwork)
+library(cowplot)
+library(lemon)
+library(purrr)
+library(rnaturalearthdata)
+library(rnaturalearth)
+library(viridis)
+library(scico)
 
+theme_1 <- theme_bw() +
+  theme(text = element_text(size = 16),
+        axis.text.x = element_text(angle = 45, size = 16, hjust = 1, vjust = 1),
+        axis.title.x = element_blank(),
+        legend.position = "right", 
+        #legend.title = element_blank(),
+        strip.background = element_blank())
 # Emission ----------------------------------------------------------------
 
 
-output_dir <- file.path("../..", "output/CCS_ET")
+output_dir <- file.path("../..", "output/LaboSeminar")
 
 CLP <- c("SSP2i_CM1_NoCC_No","SSP2i_CM2_NoCC_No","SSP2i_CM3_NoCC_No","SSP2i_CM4_NoCC_No","SSP2i_CM5_NoCC_No","SSP2i_CM6_NoCC_No")
 CLP <- c("SSP2i_CM13_NoCC_No","SSP2i_CM14_NoCC_No","SSP2i_CM15_NoCC_No","SSP2i_CM16_NoCC_No","SSP2i_CM17_NoCC_No","SSP2i_CM18_NoCC_No")
@@ -384,17 +405,20 @@ ggsave(
 
 
 thema <- "Gro_Emi_CO2"
-thema <- "Emi_CO2"
 thema <- "Pop"
 thema <- "GDP_MER"
 thema <- "Gro_Rem_CO2"
 thema <- "Pol_Cos_Cns_Los_rat"
 thema <- "Pol_Cos_GDP_Los_rat"
 thema <- "Prc_Car"
+thema <- "Emi_CO2"
+thema <- "Trd_Emi_All_Vol"
+thema <- "Pol_Cos_Cns_Los_rat_NPV_5pc"
+thema <- "Trd_Emi_All_Val_GDP"
 
 
-#CLP <- c("SSP2i_BaU_NoCC_No", "SSP2i_CM15_NoCC_No", "SSP2i_CM7_NoCC_No","SSP2i_CM24_NoCC_No")
-#CLP <- c("SSP2i_CM13_NoCC_No", "SSP2i_CM15_NoCC_No","SSP2i_CM18_NoCC_No")
+output_dir <- file.path("../..", "output/LaboSeminar")
+CLP <- paste0("SSP2i_CM", c(1:24), "_NoCC_No")
 
 df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
   filter(VEMF == thema) %>%
@@ -410,19 +434,23 @@ df$SCENARIO <- factor(
 )
 
 g <- df %>% 
-  ggplot(aes(x = YEMF, y = IAMC_Template, group = SCENARIO, color = SCENARIO)) +
+  ggplot(aes(x = YEMF, y = IAMC_Template,group = SCENARIO,color = SCENARIO)) +
   geom_line(linewidth = 1) +
-  geom_point(size = 2) +  
-  scale_x_discrete(breaks = c("2020","2040","2060","2080","2100"))+
+  scale_color_viridis_d(option = "turbo") +
+  scale_x_discrete(breaks = c("2020","2040","2060","2080","2100")) +
+  ylab("Emissions|CO2 (Mt/yr)") +
+  #ylab("Emissions trading|import (Mt/yr)") +
+  #ylab("Cumulative consumption loss rate (%)")
+  theme_1 +
+  theme(legend.position = "bottom")
+
+  #geom_point(size = 2) +  
   #ylab("GDP|MER (billion US$2010/yr)")+
   #ylab("Population (million)")+
-  ylab("Carbon Price (US$2010/yr)")+
-  ylab("Emissions|CO2 (Mt/yr)")+
+  #ylab("Carbon Price (US$2010/yr)")+
   #ylab("Policy Cost|Consumption (%)")+
   #ylab("Policy Cost|GDP (%)")+
   #ylab("Electrification rate (%)")+
-  theme_1+
-  theme(legend.position = "bottom")
 
 plot(g)
 
@@ -430,8 +458,117 @@ name  <- paste0(thema, ".png")
 ggsave(
   filename = file.path(output_dir, name),
   plot = g,
-  width = 12,
-  height = 6.5,
+  width = 16,
+  height = 10,
+  units = "in",
+  dpi = 300,
+  bg = "white"
+)
+
+#Cumlative CCS-----------------------------------------------------------
+output_dir <- file.path("../..", "output/LaboSeminar")
+
+thema <- "Car_Seq_CCS"
+CLP <- paste0("SSP2i_CM", c(1:24), "_NoCC_No")
+
+df <- rgdx.param("JPN_IAMC.gdx", "IAMC_template") %>%
+  filter(VEMF == thema) %>%
+  filter(SCENARIO %in% CLP) %>%
+  mutate(
+    YEMF_num = as.numeric(as.character(YEMF))
+  ) %>%
+  group_by(SCENARIO, YEMF_num) %>%
+  summarise(
+    IAMC_Template = sum(IAMC_Template, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(SCENARIO, YEMF_num) %>%
+  group_by(SCENARIO) %>%
+  reframe({
+    x0 <- YEMF_num
+    y0 <- IAMC_Template
+
+    keep <- !is.na(x0) & !is.na(y0)
+
+    x0 <- x0[keep]
+    y0 <- y0[keep]
+
+    years_interp <- seq(min(x0), max(x0), by = 1)
+
+    tibble(
+      YEMF_num = years_interp,
+      IAMC_Template_interp = approx(
+        x = x0,
+        y = y0,
+        xout = years_interp,
+        method = "linear",
+        rule = 2
+      )$y
+    )
+  }) %>%
+  group_by(SCENARIO) %>%
+  arrange(YEMF_num, .by_group = TRUE) %>%
+  mutate(
+    IAMC_Template_cum = cumsum(IAMC_Template_interp)
+  ) %>%
+  ungroup()
+
+df$SCENARIO <- factor(
+  df$SCENARIO,
+  levels = paste0("SSP2i_CM", 1:24, "_NoCC_No")
+)
+
+g <- df %>% 
+  ggplot(aes(
+    x = YEMF_num,
+    y = IAMC_Template_cum/1000,
+    group = SCENARIO,
+    color = SCENARIO
+  )) +
+
+  # 3-40
+  annotate(
+    "rect",
+    xmin = -Inf, xmax = Inf,
+    ymin = 3, ymax = 40,
+    fill = "skyblue",
+    alpha = 0.15
+  ) +
+
+  # 40以上
+  annotate(
+    "rect",
+    xmin = -Inf, xmax = Inf,
+    ymin = 40, ymax = Inf,
+    fill = "purple",
+    alpha = 0.12
+  ) +
+
+  geom_line(linewidth = 1) +
+
+  scale_color_viridis_d(option = "turbo") +
+
+  scale_x_continuous(
+    breaks = c(2020, 2040, 2060, 2080, 2100)
+  ) +
+
+  ylab("Cumulative Carbon Sequestration (Gt)") +
+  xlab(NULL) +
+
+  theme_1 +
+  theme(
+    legend.position = "bottom"
+  )
+
+plot(g)
+
+name <- paste0(thema, "_cumulative_interp.png")
+
+ggsave(
+  filename = file.path(output_dir, name),
+  plot = g,
+  width = 16,
+  height = 10,
   units = "in",
   dpi = 300,
   bg = "white"
