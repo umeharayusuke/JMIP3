@@ -66,9 +66,9 @@ dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 scenario_key <- c(
   "SSP2_BaU_NoCC_No" = "BaU",
   "SSP2_CM2_NoCC_No" = "NZE",
-  "SSP2_CM2_cap2_cf10_NoCC_No" = "NZE_cap/high",
+  "SSP2_CM2_cap2_cf10_NoCC_No" = "NZE_INV/high",
   "SSP2_CM2_cap1_cf05_NoCC_No" = "NZE_CF/low",
-  "SSP2_CM2_cap2_cf05_NoCC_No" = "NZE_cap/high_CF/low",
+  "SSP2_CM2_cap2_cf05_NoCC_No" = "NZE_INV/high_CF/low",
   "SSP2_CM2_off_NoCC_No" = "NZE_wo/offshore"
 )
 scenario_levels <- unname(scenario_key)
@@ -78,21 +78,21 @@ scenario_colours <- c(
   "BaU" = "#222222",
   "NZE" = "#0072B2",
   "NZE_wo/offshore" = "#7A7A7A",
-  "NZE_cap/high_CF/low" = "#CC79A7",
-  "NZE_cap/high" = "#E69F00",
+  "NZE_INV/high_CF/low" = "#CC79A7",
+  "NZE_INV/high" = "#E69F00",
   "NZE_CF/low" = "#009E73"
 )
 scenario_linetypes <- c(
   "BaU" = "solid",
   "NZE" = "solid",
   "NZE_wo/offshore" = "dotted",
-  "NZE_cap/high_CF/low" = "longdash",
-  "NZE_cap/high" = "dashed",
+  "NZE_INV/high_CF/low" = "longdash",
+  "NZE_INV/high" = "dashed",
   "NZE_CF/low" = "dotdash"
 )
 scenario_shapes <- c(
   "BaU" = 16, "NZE" = 17, "NZE_wo/offshore" = 4,
-  "NZE_cap/high_CF/low" = 18, "NZE_cap/high" = 15, "NZE_CF/low" = 3
+  "NZE_INV/high_CF/low" = 18, "NZE_INV/high" = 15, "NZE_CF/low" = 3
 )
 
 component_key <- c(
@@ -105,7 +105,7 @@ component_key <- c(
 )
 sector_levels <- c(
   "AFOLU", "Energy", "Industrial Processes", "Other",
-  "Product Use", "Waste", "Capture and Removal"
+  "Product Use", "Waste", "Capture and Removal", "Emission permit imports"
 )
 sector_colours <- c(
   "AFOLU" = "#009E73",
@@ -114,7 +114,8 @@ sector_colours <- c(
   "Other" = "#7A7A7A",
   "Product Use" = "#CC79A7",
   "Waste" = "#E69F00",
-  "Capture and Removal" = "#56B4E9"
+  "Capture and Removal" = "#56B4E9",
+  "Emission permit imports" = "#332288"
 )
 
 raw <- rgdx.param(gdx_file, "IAMC_template") %>%
@@ -143,19 +144,31 @@ if (length(missing_scenarios) > 0) {
 }
 
 total_emissions <- raw %>%
-  filter(variable == "Emi_CO2")
+  filter(variable %in% c("Emi_CO2", "Trd_Emi_All_Vol")) %>%
+  select(scenario, year, variable, value) %>%
+  pivot_wider(names_from = variable, values_from = value, values_fill = 0) %>%
+  mutate(value = Emi_CO2 - Trd_Emi_All_Vol)
 
 composition_wide <- raw %>%
   filter(
-    variable %in% c("Emi_CO2", names(component_key)),
+    variable %in% c("Emi_CO2", "Trd_Emi_All_Vol", names(component_key)),
     year %in% c(2050L, 2100L)
   ) %>%
   select(scenario, year, variable, value) %>%
   pivot_wider(names_from = variable, values_from = value, values_fill = 0) %>%
   mutate(
     Other = Emi_CO2 - Emi_CO2_AFO - Emi_CO2_Ene - Emi_CO2_Ind_Pro -
-      Emi_CO2_Pro_Use - Emi_CO2_Was - Emi_CO2_Cap_and_Rem
+      Emi_CO2_Pro_Use - Emi_CO2_Was - Emi_CO2_Cap_and_Rem,
+    `Emission permit imports` = -Trd_Emi_All_Vol,
+    adjusted_total = Emi_CO2 - Trd_Emi_All_Vol,
+    component_total = Emi_CO2_AFO + Emi_CO2_Ene + Emi_CO2_Ind_Pro + Other +
+      Emi_CO2_Pro_Use + Emi_CO2_Was + Emi_CO2_Cap_and_Rem +
+      `Emission permit imports`
   )
+
+if (any(abs(composition_wide$adjusted_total - composition_wide$component_total) > 1e-8)) {
+  stop("CO2 components including emission permit imports do not sum to the adjusted total.")
+}
 
 composition <- composition_wide %>%
   filter(scenario != "BaU") %>%
@@ -167,7 +180,8 @@ composition <- composition_wide %>%
     Other,
     `Product Use` = Emi_CO2_Pro_Use,
     Waste = Emi_CO2_Was,
-    `Capture and Removal` = Emi_CO2_Cap_and_Rem
+    `Capture and Removal` = Emi_CO2_Cap_and_Rem,
+    `Emission permit imports`
   ) %>%
   pivot_longer(
     cols = all_of(sector_levels), names_to = "sector", values_to = "value"
@@ -197,7 +211,7 @@ p_left <- ggplot(
     limits = c(0, NA), labels = label_number(big.mark = ",", accuracy = 1),
     expand = expansion(mult = c(0, 0.035))
   ) +
-  labs(tag = "a", x = "Year", y = expression(CO[2]~emissions~(Mt~CO[2]~yr^{-1}))) +
+  labs(tag = "a", x = "Year", y = expression(CO[2]~balance~(Mt~CO[2]~yr^{-1}))) +
   guides(
     colour = guide_legend(ncol = 2, byrow = TRUE),
     linetype = guide_legend(ncol = 2, byrow = TRUE),
@@ -214,7 +228,7 @@ p_right <- ggplot(composition, aes(value, scenario_plot, fill = sector)) +
     labels = label_number(big.mark = ",", accuracy = 1),
     expand = expansion(mult = c(0.035, 0.035))
   ) +
-  labs(tag = "b", x = expression(CO[2]~emissions~(Mt~CO[2]~yr^{-1})), y = NULL) +
+  labs(tag = "b", x = expression(CO[2]~balance~(Mt~CO[2]~yr^{-1})), y = NULL) +
   guides(fill = guide_legend(ncol = 2, byrow = TRUE)) +
   theme_ncc() +
   theme(panel.spacing.y = unit(3, "mm"))
@@ -314,7 +328,8 @@ p_lcoe <- ggplot(
   aes(value, technology, colour = scenario, shape = scenario)
 ) +
   geom_point(
-    position = position_dodge(width = 0.62), size = 1.75, stroke = 0.45,
+    position = position_dodge(width = 0.62, reverse = TRUE),
+    size = 1.75, stroke = 0.45,
     na.rm = TRUE
   ) +
   facet_wrap(~year, nrow = 1) +
@@ -328,41 +343,40 @@ p_lcoe <- ggplot(
   theme_ncc() +
   theme(legend.position = "none")
 
-price_spec <- tribble(
-  ~variable, ~price_type, ~conversion,
-  "Prc_Sec_Ene_Ele_MWh", "Secondary electricity", 1,
-  "Prc_Fin_Ene_Ele", "Final electricity", 3.6
-)
-price_type_levels <- price_spec$price_type
-price_colours <- c(
-  "Secondary electricity" = "#4D4D4D",
-  "Final electricity" = "#56B4E9"
-)
-
-electricity_prices <- raw %>%
-  inner_join(price_spec, by = "variable") %>%
+final_electricity_prices <- raw %>%
+  filter(variable == "Prc_Fin_Ene_Ele") %>%
   filter(year %in% c(2050L, 2100L)) %>%
+  group_by(year) %>%
   mutate(
-    value = value * conversion,
-    price_type = factor(price_type, levels = price_type_levels),
+    bau_price = value[as.character(scenario) == "BaU"],
+    relative_price = value / bau_price
+  ) %>%
+  ungroup() %>%
+  mutate(
     scenario_plot = factor(as.character(scenario), levels = rev(scenario_levels)),
     year = factor(year, levels = c(2050L, 2100L))
   )
 
+if (any(!is.finite(final_electricity_prices$relative_price)) ||
+    any(final_electricity_prices$relative_price <= 0)) {
+  stop("Final electricity prices could not be normalised to BaU.")
+}
+
 p_prices <- ggplot(
-  electricity_prices,
-  aes(value, scenario_plot, fill = price_type)
+  final_electricity_prices,
+  aes(relative_price, scenario_plot, fill = scenario)
 ) +
-  geom_col(position = position_dodge(width = 0.72), width = 0.62) +
+  geom_col(width = 0.62) +
+  geom_vline(xintercept = 1, linewidth = 0.35, linetype = "dashed", colour = "black") +
   facet_wrap(~year, nrow = 1) +
-  scale_fill_manual(values = price_colours, drop = FALSE) +
+  scale_fill_manual(values = scenario_colours, drop = FALSE) +
   scale_x_continuous(
-    limits = c(0, NA), labels = label_number(big.mark = ",", accuracy = 1),
+    limits = c(0, NA), labels = label_number(accuracy = 0.1),
     expand = expansion(mult = c(0, 0.04))
   ) +
-  labs(tag = "c", x = expression(Electricity~price~(USD[2010]~MWh^{-1})), y = NULL) +
-  guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +
-  theme_ncc()
+  labs(tag = "c", x = "Final electricity price (BaU = 1)", y = NULL) +
+  theme_ncc() +
+  theme(legend.position = "none")
 
 png(
   filename = output_file_2,
